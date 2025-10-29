@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Autos</title>
+    <!-- Aquí pueden agregar enlaces a Bootstrap, Google Fonts, o cualquier otro framework de diseño -->
+</head>
+<body>
+    <h1>Listado de Autos</h1>
+
+    <!-- Contenedor donde se mostrarán los autos -->
+    <ul id="autos-list">
+        <!-- Cada <li> con los datos de un auto se generará dinámicamente -->
+    </ul>
+
+    <!-- Contenedor para mostrar errores al usuario -->
+    <div id="error-message" style="color: red;"></div>
+
+    <!-- Aquí pueden agregar Navbar, Footer u otros componentes de diseño -->
+
+    <!-- Librería Supabase JS v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+    <script>
+        // Inicializar el cliente Supabase con URL y clave anónima
+        const supabaseUrl = 'https://ehevikaoxwajkbnidxoo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoZXZpa2FveHdhamtibmlkeG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNTY1ODgsImV4cCI6MjA3NjczMjU4OH0.gc-fSzt1uqkpi7V-Ts4_BRkwMedvTdLwkS0Nl0VtREs';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Función para obtener los autos de la tabla
+        async function obtenerAutos() {
+            try {
+                // Consultar todos los datos de la tabla "autos"
+                const { data, error } = await supabase
+                    .from('autos')
+                    .select('*');
+
+                if (error) {
+                    // Mostrar mensaje de error si la consulta falla
+                    document.getElementById('error-message').textContent = 'Error al obtener los datos: ' + error.message;
+                    console.error(error);
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    document.getElementById('error-message').textContent = 'No hay autos registrados en la base de datos.';
+                    return;
+                }
+
+                // Contenedor de la lista de autos
+                const lista = document.getElementById('autos-list');
+                lista.innerHTML = ''; // Limpiar contenido antes de agregar
+
+                // Iterar sobre los datos y crear elementos <li> para cada auto
+                data.forEach(auto => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `
+                        <strong>ID:</strong> ${auto.id} <br>
+                        <strong>Marca:</strong> ${auto.marca || 'N/A'} <br>
+                        <strong>Modelo:</strong> ${auto.modelo || 'N/A'} <br>
+                        <strong>Patente:</strong> ${auto.patente || 'N/A'} <br>
+                        <strong>Año:</strong> ${auto.anio || 'N/A'} <br>
+                        <strong>Disponible:</strong> ${auto.disponible !== null ? auto.disponible : 'N/A'} <br>
+                        <strong>Fecha de Registro:</strong> ${auto.fechaderegistro || 'N/A'}
+                    `;
+                    lista.appendChild(item);
+
+                    // Aquí pueden agregar clases de Bootstrap a cada <li> o usar <div> con cards para diseño
+                });
+
+            } catch (err) {
+                // Capturar cualquier error inesperado
+                console.error(err);
+                doc
