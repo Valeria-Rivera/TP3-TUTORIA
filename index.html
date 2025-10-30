@@ -3,55 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Autos - Supabase</title>
-    <!-- 
-        COMENTARIO: Aquí es donde debes agregar las referencias a tus frameworks de diseño. 
-        Por ejemplo, el CSS de Bootstrap o Tailwind.
-        
-        EJEMPLO PARA BOOTSTRAP (DESCOMENTAR CUANDO SE QUIERA APLICAR DISEÑO):
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    -->
+    <title>Listado de Autos - Supabase (Bootstrap)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
     <style>
-        /* COMENTARIO: Los estilos a continuación son mínimos y solo para asegurar la legibilidad básica. */
-        body { font-family: sans-serif; padding: 20px; }
-        .auto-item { 
-            border: 1px solid #ccc; 
-            margin-bottom: 10px; 
-            padding: 10px; 
+        /* Estilos personalizados para mantener la separación, usando rem como unidad */
+        body { 
+            background-color: #f8f9fa; /* Fondo gris claro de Bootstrap */
         }
-        .auto-item p { margin: 5px 0; }
+        .auto-card { 
+            margin-bottom: 1.5rem; /* Margen inferior para separar las tarjetas */
+        }
     </style>
 </head>
 <body>
 
-    <!-- COMENTARIO: Este es el contenedor principal. Aquí puedes agregar tu Navbar y estructura de layout. -->
-    <div id="app-container">
-        
-        <h1>Listado de Autos desde Supabase</h1>
-        <p>A continuación se muestran los datos de la tabla "autos".</p>
-
-        <!-- Contenedor para mensajes de estado (carga o error) -->
-        <div id="status-message" style="color: blue; margin-bottom: 15px;">
-            Cargando datos...
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-car-front-fill me-2" viewBox="0 0 16 16">
+                    <path d="M2.52 3.522A.5.5 0 0 1 3 3.5v9a.5.5 0 0 1-.52.478L.5 12.18l.745-1.996a.5.5 0 0 1 .432-.284h11.646a.5.5 0 0 1 .432.284l.745 1.996.02-.008a.5.5 0 0 1-.52-.478v-9a.5.5 0 0 1 .52-.478l1.62-.36a.25.25 0 0 1 .189.043l.745 1.996a.5.5 0 0 1 .432.284h.079a.5.5 0 0 1 .52.478v.5a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-.5a.5.5 0 0 1 .52-.478l1.62-.36a.25.25 0 0 1 .189.043z"/>
+                    <path d="M4 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM1 3a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm14 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+                Catálogo Supabase
+            </a>
+            <button id="add-new-btn" class="btn btn-warning btn-sm" onclick="alert('Funcionalidad de Agregar Nuevo Auto pendiente!')">
+                <i class="bi bi-plus-lg"></i> ➕ Agregar Nuevo Auto
+            </button>
         </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <div id="app-container">
+            
+            <h1 class="mb-3 text-primary">Listado de Autos 🚀</h1>
+            <p class="lead">Datos de la tabla **"autos"** cargados desde Supabase.</p>
 
-        <!-- Lista donde se insertarán los elementos de la base de datos -->
-        <div id="auto-list">
-            <!-- COMENTARIO: Los elementos de los autos (<div> o <li>) se insertarán aquí. -->
+            <div id="status-message" class="alert alert-info" role="alert">
+                Cargando datos...
+            </div>
+            
+            <div class="mb-4">
+                <button class="btn btn-outline-success me-2" onclick="alert('Botón de filtrado simulado')">🔍 Aplicar Filtros</button>
+                <button class="btn btn-secondary" onclick="window.location.reload()">🔄 Recargar Lista</button>
+            </div>
+
+            <div id="auto-list" class="row">
+                </div>
+            
         </div>
-        
     </div>
 
-    <!-- 
-        COMENTARIO: Aquí se cargan las dependencias del Script. 
-        1. Librería Supabase.
-        2. Script de Bootstrap (si se usa).
-    -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- EJEMPLO PARA BOOTSTRAP JS (DESCOMENTAR CUANDO SE QUIERA APLICAR DISEÑO): 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         // COMENTARIO: Inicia el Script de JavaScript.
@@ -70,44 +76,86 @@
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         /**
-         * Función para mostrar un error en el contenedor de mensajes.
+         * Función para mostrar un error en el contenedor de mensajes (usando clase de Bootstrap).
          * @param {string} msg - El mensaje de error a mostrar.
          */
         function displayError(msg) {
-            statusMessage.style.color = 'red';
-            statusMessage.textContent = 'ERROR: ' + msg;
+            statusMessage.classList.remove('alert-info');
+            statusMessage.classList.add('alert-danger'); // Clase para errores en Bootstrap
+            statusMessage.textContent = '❌ ERROR: ' + msg;
             console.error('Supabase Error:', msg);
         }
 
         /**
-         * Función para mostrar un registro de auto en el DOM.
+         * Función para mostrar un registro de auto como una Card de Bootstrap.
          * @param {object} auto - El objeto con los datos del auto.
          */
         function displayAuto(auto) {
-            // Crea un contenedor <div> para cada auto
-            const autoDiv = document.createElement('div');
-            autoDiv.className = 'auto-item'; // Clase básica para el contenedor (usarás clases Bootstrap aquí)
+            // Crea una columna (col-md-4) para el layout en grid de Bootstrap
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 col-lg-3 auto-card'; // 4 columnas en desktop, 3 en pantallas grandes
             
+            // Crea una tarjeta (Card) de Bootstrap
+            const autoCard = document.createElement('div');
+            autoCard.className = 'card shadow h-100'; // Sombra y altura uniforme
+
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body';
+
+            // Título de la tarjeta (Idealmente con una columna importante como "Modelo" o "Marca")
+            const cardTitle = document.createElement('h5');
+            cardTitle.className = 'card-title text-primary';
+            // Suponiendo que hay una columna 'modelo' o simplemente muestra el ID
+            cardTitle.textContent = auto.hasOwnProperty('modelo') ? auto.modelo : `Auto ID: ${auto.id}`;
+
+            const cardText = document.createElement('ul');
+            cardText.className = 'list-group list-group-flush'; // Lista sin bordes ni padding
+
             // Recorre todas las propiedades del objeto auto (columnas de la tabla)
             for (const key in auto) {
                 if (auto.hasOwnProperty(key)) {
-                    const label = key.charAt(0).toUpperCase() + key.slice(1); // Capitaliza la primera letra para la etiqueta
+                    // Evitar mostrar el campo 'id' dos veces o datos de sistema si no es necesario
+                    if (key === 'id') continue; 
+                    
+                    const label = key.charAt(0).toUpperCase() + key.slice(1); // Capitaliza la primera letra
                     const value = auto[key];
                     
-                    // Crea un párrafo (o etiqueta similar) para cada campo
-                    const p = document.createElement('p');
-                    p.innerHTML = `<strong>${label}:</strong> ${value}`;
+                    // Crea un elemento de lista para cada campo
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `<strong>${label}</strong> <span>${value}</span>`;
                     
-                    autoDiv.appendChild(p);
+                    cardText.appendChild(li);
                 }
             }
             
-            // Línea separadora simple
-            const hr = document.createElement('hr');
-            autoDiv.appendChild(hr);
+            // Agrega botones de acción
+            const cardFooter = document.createElement('div');
+            cardFooter.className = 'card-footer bg-light d-flex justify-content-between';
+            
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn btn-sm btn-outline-info';
+            editBtn.textContent = '✏️ Editar';
+            editBtn.onclick = () => alert(`Editar Auto ID: ${auto.id}`);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-sm btn-outline-danger';
+            deleteBtn.textContent = '🗑️ Eliminar';
+            deleteBtn.onclick = () => alert(`Eliminar Auto ID: ${auto.id}`);
+            
+            cardFooter.appendChild(editBtn);
+            cardFooter.appendChild(deleteBtn);
 
-            // Agrega el contenedor del auto a la lista principal
-            autoList.appendChild(autoDiv);
+
+            // Ensambla la tarjeta
+            cardBody.appendChild(cardTitle);
+            cardBody.appendChild(cardText);
+            autoCard.appendChild(cardBody);
+            autoCard.appendChild(cardFooter);
+            colDiv.appendChild(autoCard);
+
+            // Agrega la columna (con la tarjeta) a la lista principal
+            autoList.appendChild(colDiv);
         }
 
         /**
@@ -117,7 +165,8 @@
             // 3. Consultar todos los datos de la tabla 'autos'
             const { data, error } = await supabaseClient
                 .from(TABLE_NAME)
-                .select('*'); // '*' selecciona todas las columnas
+                .select('*')
+                .order('id', { ascending: true }); // Ordena por ID
 
             if (error) {
                 // 8. Manejo de errores
@@ -127,17 +176,18 @@
 
             // Si la consulta es exitosa:
             
-            // Limpia el mensaje de estado y muestra el total de registros
-            statusMessage.style.color = 'green';
-            statusMessage.textContent = `Éxito al cargar ${data.length} registros de autos.`;
+            // Actualiza el mensaje de estado (Bootstrap success)
+            statusMessage.classList.remove('alert-info');
+            statusMessage.classList.add('alert-success');
+            statusMessage.textContent = `✅ Éxito al cargar ${data.length} registros de autos.`;
 
             if (data.length === 0) {
                 statusMessage.textContent += " La tabla está vacía.";
             }
 
             // 4. Iterar sobre los resultados
+            // 5. Crear y mostrar elementos HTML (Cards de Bootstrap)
             data.forEach(auto => {
-                // 5. Crear y mostrar elementos HTML
                 displayAuto(auto);
             });
         }
